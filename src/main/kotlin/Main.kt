@@ -1,4 +1,3 @@
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.ReactionEmoji
@@ -9,15 +8,14 @@ import dev.kord.gateway.PrivilegedIntent
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.toList
 
-suspend fun main(args: Array<String>) {
+suspend fun main() {
     val token = System.getenv("DISCORD_BOT_TOKEN")
     val kord = Kord(token)
 
-    val sewersGuild = kord.getGuildOrThrow(Snowflake(294943212014141441))
-    val pogOff = sewersGuild.emojis.filter { it.name == "pogoff" }.toList().first()
-
     kord.on<ReactionAddEvent> {
         if (isFlippableEmoji(this.emoji)) {
+            val guild = this.getGuildOrNull() ?: return@on
+            val pogOff = guild.emojis.filter { "pogoff".equals(it.name, ignoreCase = true) }.toList().first()
             val mention = this.user.mention
             this.channel.createMessage("$mention ${pogOff.asString()}")
         }
