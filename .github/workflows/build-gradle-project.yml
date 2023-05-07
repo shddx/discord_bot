@@ -22,5 +22,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
+            git pull origin master
+            git status
             pwd
             ls -la
